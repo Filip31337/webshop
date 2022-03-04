@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="04032022" author="filip brajnović">
+        <comment>Napravi users tablicu</comment>
+        <createTable tableName="USERS">
+            <column name="ID" autoIncrement="true" type="number">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USERNAME" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="PASSWORD" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="EMAIL" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="FIRST_NAME" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="LAST_NAME" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="PHONE_NUMBER" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ENABLED" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="SEQ_USER"
+                        incrementBy="1"
+                        ordered="true"
+                        cycle="false"
+                        startValue="1"/>
+
+    </changeSet>
+</databaseChangeLog>
