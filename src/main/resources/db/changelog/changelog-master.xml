@@ -5,5 +5,12 @@
                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
     <include file="createUser.xml" relativeToChangelogFile="true"/>
+    <include file="razniDDL.xml" relativeToChangelogFile="true"/>
+
+    <include file="insert_user.xml" relativeToChangelogFile="true"/>
+    <include file="insert_user_role.xml" relativeToChangelogFile="true"/>
+    <include file="insert_product.xml" relativeToChangelogFile="true"/>
+    <include file="insert_reward.xml" relativeToChangelogFile="true"/>
+    <include file="insert_liked.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

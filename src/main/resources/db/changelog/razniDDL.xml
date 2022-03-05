@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="05032022" author="filip brajnović">
+        <comment>Napravi razne tablice</comment>
+
+        <createTable tableName="USER_ROLE">
+            <column name="ID" autoIncrement="true" type="number">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USER_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_user_role_user" references="user(id)"/>
+            </column>
+            <column name="ROLE" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <comment>1:M primjer</comment>
+        <createTable tableName="PRODUCT">
+            <column name="ID" autoIncrement="true" type="number">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TITLE" type="varchar2(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar2(2000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="SALE_STATUS" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="CATEGORY" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="PRICE" type="decimal">
+                <constraints nullable="true"/>
+            </column>
+            <column name="CREATED_BY" type="number">
+                <constraints nullable="false" foreignKeyName="fk_product_user" references="user(id)"/>
+            </column>
+            <column name="CREATED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="LOCATION" type="varchar2(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="OWNED_STATUS" type="varchar2(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="VIEW_COUNT" type="number">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <comment>1:1 primjer</comment>
+        <createTable tableName="PRODUCT_REWARD_PROGRAM">
+            <column name="ID" autoIncrement="true" type="number">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PRODUCT_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_product" references="product(id)" unique="true"/>
+            </column>
+            <column name="POINTS" type="number">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="PRODUCT_IMAGE">
+            <column name="ID" autoIncrement="true" type="number">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PRODUCT_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_product_image_product" references="product(id)"/>
+            </column>
+            <column name="DATA" type="clob">
+                <constraints nullable="true"/>
+            </column>
+            <column name="FILE_NAME" type="varchar2(200)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <comment>M:M primjer</comment>
+        <createTable tableName="LIKED_PRODUCT_RELATION">
+            <column name="PRODUCT_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_relation_product" references="product(id)"/>
+            </column>
+            <column name="USER_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_relation_user" references="user(id)"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                columnNames="PRODUCT_ID, USER_ID"
+                constraintName="uniqueLikedProductRelationFieldsConstraint"
+                tableName="LIKED_PRODUCT_RELATION"
+        />
+
+
+    </changeSet>
+
+    <changeSet id="05032022_2" author="filip brajnović">
+        <comment>dodati sekvence koje cemo koristiti u referentnom sql file-u za punjenje podataka</comment>
+    <createSequence sequenceName="SEQ_USER_ROLE"
+                    incrementBy="1"
+                    ordered="true"
+                    cycle="false"
+                    startValue="1"/>
+        <createSequence sequenceName="SEQ_PRODUCT_REWARD_PROGRAM"
+                        incrementBy="1"
+                        ordered="true"
+                        cycle="false"
+                        startValue="1"/>
+    <createSequence sequenceName="SEQ_PRODUCT"
+                    incrementBy="1"
+                    ordered="true"
+                    cycle="false"
+                    startValue="1"/>
+    <createSequence sequenceName="SEQ_PRODUCT_IMAGE"
+                    incrementBy="1"
+                    ordered="true"
+                    cycle="false"
+                    startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

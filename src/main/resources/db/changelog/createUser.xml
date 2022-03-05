@@ -6,7 +6,7 @@
 
     <changeSet id="04032022" author="filip brajnović">
         <comment>Napravi users tablicu</comment>
-        <createTable tableName="USERS">
+        <createTable tableName="USER">
             <column name="ID" autoIncrement="true" type="number">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
