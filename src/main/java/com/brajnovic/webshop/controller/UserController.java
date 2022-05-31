@@ -20,16 +20,32 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(UrlConstants.GET_USER_BY_ID)
-    public ResponseEntity<User> getUserById(@RequestBody GetUserCommand command) {
-        User response = userService.getUserById(command.getPersonId());
+    @GetMapping(UrlConstants.GET_USER_BY_ID +"/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+        if (userId == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User response = userService.getUserById(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(UrlConstants.GET_USER_BY_USER_NAME)
-    public ResponseEntity<User> getUserByName(@RequestBody GetUserCommand command) {
-        User response = userService.getUserByName(command.getPersonName());
+    @GetMapping(UrlConstants.GET_USER_BY_USER_NAME + "/{userName}")
+    public ResponseEntity<User> getUserByName(@PathVariable String userName) {
+        if (userName == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User response = userService.getUserByName(userName);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(UrlConstants.GET_USER)
+    public ResponseEntity<User> getUser(@RequestBody GetUserCommand getUserCommand) {
+        if (getUserCommand == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User response = userService.getUser(getUserCommand);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
