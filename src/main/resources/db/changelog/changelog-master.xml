@@ -12,5 +12,6 @@
     <include file="insert_product.xml" relativeToChangelogFile="true"/>
     <include file="insert_reward.xml" relativeToChangelogFile="true"/>
     <include file="insert_liked.xml" relativeToChangelogFile="true"/>
+    <include file="insert_user_user_role_relations.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -125,4 +125,26 @@
                     cycle="false"
                     startValue="1"/>
     </changeSet>
+
+    <changeSet id="06062022" author="filip brajnović">
+        <comment>makni 1:M kljuc</comment>
+        <dropColumn tableName="USER_ROLE">
+            <column name="USER_ID"/>
+        </dropColumn>
+
+        <comment>dodaj M:M relaciju</comment>
+        <createTable tableName="USER_USER_ROLE_RELATION">
+            <column name="USER_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_user_user_role_relation_user" references="user(id)"/>
+            </column>
+            <column name="USER_ROLE_ID" type="number">
+                <constraints nullable="false" foreignKeyName="fk_user_user_role_relation_user_role" references="user_role(id)"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                columnNames="USER_ID, USER_ROLE_ID"
+                constraintName="uniqueUserUserRoleRelationFieldsConstraint"
+                tableName="USER_USER_ROLE_RELATION"
+        />
+    </changeSet>
 </databaseChangeLog>

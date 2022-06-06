@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,6 +30,8 @@ public class User {
     private String phoneNumber;
 
     private Boolean enabled;
+
+    private Set<Role> roles;
 
     public Boolean isEnabled() {
         return enabled;
