@@ -9,7 +9,7 @@ Tehnologije:
 Upute za lokalno pokretanje:
 
 1. Pokretanje: Custom tomcat server sa contextom "/webshop" ili embeddanim serverom mavenom: "mvn spring-boot:run"
-2. Pristupiti swaggeru na http://localhost:8080/webshop/swagger-ui/
+2. Pristupiti swaggeru na http://localhost:8080/webshop/swagger-ui/ , preuzeti JWT na endpointu "/authenticate" te unjeti JWT pod autorizacije sa prefixom "Bearer" npr. "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY1NDcxMTI3MywiaWF0IjoxNjU0NjkzMjczfQ.4atElrSGOExqyvd-celiqejgseTSMHKmXLquZi_1-5DSRSs6XJqevnfubnBi-WE2ohdEbEzmZK8KQcVYBMyZmQ"
 3. Pristupiti h2 konzoli na http://localhost:8080/webshop/console/
 4. Preuzeti JWT preko REST APIja npr. "curl --header "Content-Type: application/json" --request POST --data "{ """username""":"""admin""", """password""":"""pass1""" }" http://localhost:8080/webshop/authenticate"
 5. Pristupiti REST APIju koristeći JWT npr. "curl --header "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY1NDcwMTIwMywiaWF0IjoxNjU0NjgzMjAzfQ.0k9Qm4IloUOacoba_N6Gmtz-E6mETsVNmnmfxWFZ5tg-xCre13AjOT7Y99GQIl6aTqC8lUCyorcAN0ZJgBMffQ" -i http://localhost:8080/webshop/rest/user/getById/1"

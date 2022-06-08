@@ -18,21 +18,35 @@ import java.util.List;
 @EnableSwagger2
 public class SwaggerConfig {
 
+    private ApiKey apiKey() {
+        return new ApiKey("apiKey", "Authorization", "header");
+    }
+
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope(
+                "global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Collections.singletonList(new SecurityReference("apiKey",
+                authorizationScopes));
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder().securityReferences(defaultAuth())
+                .forPaths(PathSelectors.any()).build();
+    }
+
     @Bean
     public Docket productApi() {
-
-        HttpAuthenticationScheme authenticationScheme = HttpAuthenticationScheme
-                .JWT_BEARER_BUILDER
-                .name("JWT Token")
-                .build();
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 //.apis(RequestHandlerSelectors.basePackage("com.brajnovic.webshop.controller"))
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(createApiInfo());
+                .apiInfo(createApiInfo())
+                .securitySchemes(Collections.singletonList(apiKey()))
+                .securityContexts(Collections.singletonList(securityContext()));
     }
 
     private ApiInfo createApiInfo() {
