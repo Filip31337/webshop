@@ -8,7 +8,7 @@ Tehnologije:
 
 Upute za lokalno pokretanje:
 
-1. Pokrenuti mvn spring-boot:run
+1. Pokretanje: Custom tomcat server sa contextom "/webshop" ili embeddanim serverom mavenom: "mvn spring-boot:run"
 2. Pristupiti swaggeru na http://localhost:8080/webshop/swagger-ui/
 3. Pristupiti h2 konzoli na http://localhost:8080/webshop/console/
 4. Preuzeti JWT preko REST APIja npr. "curl --header "Content-Type: application/json" --request POST --data "{ """username""":"""admin""", """password""":"""pass1""" }" http://localhost:8080/webshop/authenticate"
