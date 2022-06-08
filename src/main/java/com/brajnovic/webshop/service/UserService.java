@@ -1,4 +1,4 @@
-package com.brajnovic.webshop.service.impl;
+package com.brajnovic.webshop.service;
 
 import com.brajnovic.webshop.command.GetUserCommand;
 import com.brajnovic.webshop.model.User;

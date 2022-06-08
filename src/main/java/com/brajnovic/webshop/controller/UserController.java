@@ -2,7 +2,7 @@ package com.brajnovic.webshop.controller;
 
 import com.brajnovic.webshop.command.GetUserCommand;
 import com.brajnovic.webshop.model.User;
-import com.brajnovic.webshop.service.impl.UserService;
+import com.brajnovic.webshop.service.UserService;
 import com.brajnovic.webshop.util.UrlConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

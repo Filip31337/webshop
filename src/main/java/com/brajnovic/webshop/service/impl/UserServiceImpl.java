@@ -4,6 +4,7 @@ import com.brajnovic.webshop.command.GetUserCommand;
 import com.brajnovic.webshop.entity.UserEntity;
 import com.brajnovic.webshop.model.User;
 import com.brajnovic.webshop.repository.UserRepository;
+import com.brajnovic.webshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
