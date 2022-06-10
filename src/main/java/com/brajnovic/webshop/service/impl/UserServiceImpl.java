@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -57,6 +59,17 @@ public class UserServiceImpl implements UserService {
         );
 
         return UserEntity.convertToUser(userEntity);
+    }
+
+    @Override
+    public List<User> getUsers() throws EntityNotFoundException {
+        List<User> userList = new ArrayList<>();
+
+        List<UserEntity> userEntityList = new ArrayList<>(userRepository.findAll());
+
+        userEntityList.forEach(userEntity -> userList.add(UserEntity.convertToUser(userEntity)));
+
+        return userList;
     }
 
 }

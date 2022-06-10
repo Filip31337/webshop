@@ -1,6 +1,7 @@
 package com.brajnovic.webshop.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,19 +11,25 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+    @Value("${app.configuration.cors.allowedOrigins}")
+    private List<String> corsAllowedOrigins;
 
     private static final String[] AUTH_LIST = {
             "/swagger-resources/**",
@@ -33,8 +40,8 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
             "/webjars/**",
             "/webshop/swagger-ui/**",
             "/webshop/swagger-ui",
-            "/authenticate",
-            "/webshop/authenticate"
+            "/webshop/authenticate",
+            "/webshop"
     };
 
     @Autowired
@@ -67,6 +74,36 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        configureCors(http);
+        configureCsrf(http);
+        configureAuthorization(http);
+        configureSessionManagement(http);
+        configureH2Console(http);
+        configureJwt(http);
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        // ignore JWT filter on this endpoint
+        web.ignoring().antMatchers("/authenticate");
+    }
+
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(this.corsAllowedOrigins);
+        corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
+        corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+        corsConfiguration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    private void configureCors(HttpSecurity http) throws Exception {
+        http.cors().configurationSource(this.corsConfigurationSource());
+    }
+
+    private void configureAuthorization(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
                 .antMatchers(AUTH_LIST).permitAll()
@@ -76,18 +113,22 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // disable because JWT implementation
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+                .sessionManagement();
+    }
+
+    private void configureJwt(HttpSecurity http) {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    public void configure(WebSecurity web) {
-        // ignore JWT filter on this endpoint
-        web.ignoring().antMatchers("/authenticate");
+    private void configureSessionManagement(HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+    private void configureCsrf(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+    }
+
+    private void configureH2Console(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
     }
 
 }
