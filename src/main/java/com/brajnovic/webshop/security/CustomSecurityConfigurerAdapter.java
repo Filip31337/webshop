@@ -20,6 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,8 +64,10 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
+        SecureRandom s = SecureRandom.getInstanceStrong();
+
+        return new BCryptPasswordEncoder(8, s);
     }
 
     @Bean
