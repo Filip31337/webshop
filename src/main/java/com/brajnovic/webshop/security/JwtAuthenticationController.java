@@ -1,20 +1,17 @@
 package com.brajnovic.webshop.security;
 
 import com.brajnovic.webshop.model.AuthenticationResponse;
-import com.brajnovic.webshop.model.CustomUserDetails;
-import com.brajnovic.webshop.model.JwtRequest;
 import com.brajnovic.webshop.model.JwtResponse;
-import com.brajnovic.webshop.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
@@ -26,17 +23,14 @@ public class JwtAuthenticationController {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken() {
 
-        Authentication authentication = authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.isAuthenticated()) {
             final UserDetails userDetails = customUserDetailsService
-                    .loadUserByUsername(authenticationRequest.getUsername());
+                    .loadUserByUsername(authentication.getName());
 
             final String token = jwtTokenUtil.generateToken(userDetails);
 
@@ -48,24 +42,5 @@ public class JwtAuthenticationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-    }
-
-    private Authentication authenticate(String username, String password) throws Exception {
-        try {
-            CustomUserDetails user = customUserDetailsService.loadUserByUsername(username);
-            return checkPassword(user, password, passwordEncoder);
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("INVALID_CREDENTIALS", e);
-        }
-    }
-
-    private Authentication checkPassword(CustomUserDetails user, String rawPassword, PasswordEncoder encoder) {
-        if (encoder.matches(rawPassword, user.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
-        } else {
-            throw new BadCredentialsException("Bad credentials");
-        }
     }
 }

@@ -1,7 +1,6 @@
 package com.brajnovic.webshop.controller;
 
 import com.brajnovic.webshop.model.Product;
-import com.brajnovic.webshop.model.User;
 import com.brajnovic.webshop.service.ProductsService;
 import com.brajnovic.webshop.util.UrlConstants;
 import org.slf4j.Logger;

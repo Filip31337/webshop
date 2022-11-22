@@ -1,12 +1,10 @@
-package com.brajnovic.webshop.security;
+package com.brajnovic.webshop.security.filter;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.brajnovic.webshop.security.JwtTokenUtil;
+import com.brajnovic.webshop.security.CustomUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +13,16 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.brajnovic.webshop.service.CustomUserDetailsService;
-
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+
+    private final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -52,6 +54,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         // Once we get the token validate it.
+        // TODO ovdje provjeriti da li je pametnije gledati isAuthenticated() pa ukoliko je,
+        //  onda preskocit opet setiranje authentikacije
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
@@ -71,6 +75,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+        log.info("Finished jwt filter.");
+    }
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().equals("/authenticate");
     }
 
 }
